@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Météo Wilaya - Météo Algérie</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2e86de;
+            --secondary: #3dc1d3;
+            --dark: #2c3e50;
+            --light: #f5f7fa;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f9fc;
+            color: #333;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .back-btn {
+            position: absolute;
+            left: 1rem;
+            top: 1rem;
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+        
+        .wilaya-title {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Conteneur principal */
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        /* Sélecteurs */
+        .selectors {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .select-box {
+            position: relative;
+        }
+        
+        .select-box label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .select-box select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.8rem center;
+            background-size: 1rem;
+        }
+        
+        /* Carte météo */
+        .weather-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .weather-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .location {
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .weather-date {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .weather-main {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .weather-icon {
+            font-size: 4rem;
+            color: var(--primary);
+        }
+        
+        .weather-temp {
+            font-size: 3.5rem;
+            font-weight: 300;
+        }
+        
+        .weather-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            padding: 1.5rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .detail-icon {
+            font-size: 1.2rem;
+            color: var(--primary);
+            width: 30px;
+            text-align: center;
+        }
+        
+        /* Prévisions */
+        .forecast-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .forecast-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+        
+        .forecast-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .forecast-day {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .forecast-icon {
+            font-size: 2rem;
+            margin: 0.5rem 0;
+            color: var(--primary);
+        }
+        
+        .forecast-temp {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .max-temp {
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .min-temp {
+            color: #777;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .selectors {
+                grid-template-columns: 1fr;
+            }
+            
+            .weather-main {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .forecast-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- En-tête -->
+    <header class="header">
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <div class="header-content">
+            <h1 class="wilaya-title" id="wilayaTitle">Météo</h1>
+            <p>Informations météorologiques détaillées</p>
+        </div>
+    </header>
+    
+    <!-- Contenu principal -->
+    <div class="container">
+        <!-- Sélecteurs -->
+        <div class="selectors">
+            <div class="select-box">
+                <label for="wilaya-select">Wilaya</label>
+                <select id="wilaya-select" onchange="updateVillages()">
+                    <option value="">Sélectionnez une wilaya</option>
+                    <!-- Rempli dynamiquement -->
+                </select>
+            </div>
+            <div class="select-box">
+                <label for="village-select">Village/Commune</label>
+                <select id="village-select" onchange="updateWeather()" disabled>
+                    <option value="">Sélectionnez d'abord une wilaya</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Carte météo principale -->
+        <div class="weather-card" id="weatherCard">
+            <div class="weather-header">
+                <h2 class="location" id="locationTitle">--</h2>
+                <p class="weather-date" id="weatherDate">--</p>
+            </div>
+            <div class="weather-main">
+                <div class="weather-icon" id="weatherIcon">
+                    <i class="fas fa-cloud"></i>
+                </div>
+                <div class="weather-temp" id="weatherTemp">--°C</div>
+            </div>
+            <div class="weather-details">
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-droplet"></i>
+                    </div>
+                    <div>
+                        <div>Humidité</div>
+                        <div id="humidity">--%</div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-wind"></i>
+                    </div>
+                    <div>
+                        <div>Vent</div>
+                        <div id="windSpeed">-- km/h</div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-temperature-high"></i>
+                    </div>
+                    <div>
+                        <div>Ressenti</div>
+                        <div id="feelsLike">--°C</div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-compass"></i>
+                    </div>
+                    <div>
+                        <div>Pression</div>
+                        <div id="pressure">-- hPa</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Prévisions -->
+        <h3 class="forecast-title">Prévisions sur 5 jours</h3>
+        <div class="forecast-container" id="forecastContainer">
+            <!-- Rempli dynamiquement -->
+        </div>
+    </div>
+
+    <script>
+        // Données des wilayas et villages (simulées)
+        const wilayasData = [
+            {
+                name: "Alger",
+                code: 16,
+                villages: ["Bouzareah", "Dellys", "Zéralda", "Staoueli"]
+            },
+            {
+                name: "Oran",
+                code: 31,
+                villages: ["Aïn El Turk", "Es Sénia", "Gdyel"]
+            },
+            {
+                name: "Constantine",
+                code: 25,
+                villages: ["El Khroub", "Aïn Abid", "Zighoud Youcef"]
+            }
+        ];
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Remplir le sélecteur de wilaya
+            const wilayaSelect = document.getElementById('wilaya-select');
+            wilayasData.forEach(wilaya => {
+                const option = document.createElement('option');
+                option.value = wilaya.name;
+                option.textContent = wilaya.name;
+                wilayaSelect.appendChild(option);
+            });
+
+            // Vérifier si une wilaya est spécifiée dans l'URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const wilayaParam = urlParams.get('wilaya');
+            
+            if (wilayaParam) {
+                wilayaSelect.value = wilayaParam;
+                updateVillages();
+                updateWeather();
+            }
+        });
+
+        // Met à jour les villages disponibles
+        function updateVillages() {
+            const wilayaSelect = document.getElementById('wilaya-select');
+            const villageSelect = document.getElementById('village-select');
+            
+            villageSelect.innerHTML = '<option value="">Sélectionnez un village</option>';
+            villageSelect.disabled = !wilayaSelect.value;
+            
+            if (wilayaSelect.value) {
+                // Trouver la wilaya sélectionnée
+                const selectedWilaya = wilayasData.find(w => w.name === wilayaSelect.value);
+                
+                // Remplir les villages
+                if (selectedWilaya && selectedWilaya.villages) {
+                    selectedWilaya.villages.forEach(village => {
+                        const option = document.createElement('option');
+                        option.value = village;
+                        option.textContent = village;
+                        villageSelect.appendChild(option);
+                    });
+                }
+            }
+        }
+
+        // Met à jour les données météo
+        async function updateWeather() {
+            const wilayaSelect = document.getElementById('wilaya-select');
+            const villageSelect = document.getElementById('village-select');
+            
+            if (wilayaSelect.value && villageSelect.value) {
+                // Mettre à jour le titre
+                document.getElementById('wilayaTitle').textContent = `Météo - ${wilayaSelect.value}`;
+                document.getElementById('locationTitle').textContent = `${villageSelect.value}, ${wilayaSelect.value}`;
+                
+                // Mettre à jour la date
+                const now = new Date();
+                document.getElementById('weatherDate').textContent = now.toLocaleDateString('fr-FR', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long'
+                });
+                
+                // Simuler des données météo (remplacer par un appel API réel)
+                const weatherData = await fetchWeatherData(wilayaSelect.value, villageSelect.value);
+                
+                // Mettre à jour l'affichage
+                updateWeatherDisplay(weatherData);
+                updateForecast(weatherData.forecast);
+            }
+        }
+
+        // Simule un appel API (à remplacer par un vrai appel)
+        async function fetchWeatherData(wilaya, village) {
+            // Données actuelles
+            const currentData = {
+                temperature: Math.floor(Math.random() * 15) + 20, // 20-35°C
+                conditions: ["Ensoleillé", "Nuageux", "Pluie légère", "Orage"][Math.floor(Math.random() * 4)],
+                humidity: Math.floor(Math.random() * 50) + 30, // 30-80%
+                windSpeed: (Math.random() * 15 + 5).toFixed(1), // 5-20 km/h
+                feelsLike: Math.floor(Math.random() * 15) + 20,
+                pressure: Math.floor(Math.random() * 20) + 1000 // 1000-1020 hPa
+            };
+            
+            // Prévisions sur 5 jours
+            const forecast = [];
+            const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+            
+            for (let i = 1; i <= 5; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() + i);
+                
+                forecast.push({
+                    day: days[date.getDay()],
+                    condition: ["Ensoleillé", "Nuageux", "Pluie"][Math.floor(Math.random() * 3)],
+                    maxTemp: Math.floor(Math.random() * 10) + 25,
+                    minTemp: Math.floor(Math.random() * 10) + 15
+                });
+            }
+            
+            return {
+                ...currentData,
+                forecast
+            };
+        }
+
+        // Met à jour l'affichage des données actuelles
+        function updateWeatherDisplay(data) {
+            document.getElementById('weatherTemp').textContent = `${data.temperature}°C`;
+            document.getElementById('humidity').textContent = `${data.humidity}%`;
+            document.getElementById('windSpeed').textContent = `${data.windSpeed} km/h`;
+            document.getElementById('feelsLike').textContent = `${data.feelsLike}°C`;
+            document.getElementById('pressure').textContent = `${data.pressure} hPa`;
+            
+            // Mettre à jour l'icône
+            const icon = getWeatherIcon(data.conditions);
+            document.getElementById('weatherIcon').innerHTML = `<i class="fas ${icon}"></i>`;
+            
+            // Afficher la carte
+            document.getElementById('weatherCard').style.display = 'block';
+        }
+
+        // Met à jour les prévisions
+        function updateForecast(forecastData) {
+            const forecastContainer = document.getElementById('forecastContainer');
+            forecastContainer.innerHTML = '';
+            
+            forecastData.forEach(day => {
+                const card = document.createElement('div');
+                card.className = 'forecast-card';
+                
+                const icon = getWeatherIcon(day.condition);
+                
+                card.innerHTML = `
+                    <div class="forecast-day">${day.day}</div>
+                    <div class="forecast-icon"><i class="fas ${icon}"></i></div>
+                    <div class="forecast-temp">
+                        <span class="max-temp">${day.maxTemp}°</span>
+                        <span class="min-temp">${day.minTemp}°</span>
+                    </div>
+                `;
+                
+                forecastContainer.appendChild(card);
+            });
+        }
+
+        // Retourne l'icône appropriée pour les conditions météo
+        function getWeatherIcon(conditions) {
+            const lower = conditions.toLowerCase();
+            
+            if (lower.includes('ensoleillé') || lower.includes('soleil')) return 'fa-sun';
+            if (lower.includes('nuageux') || lower.includes('nuage')) return 'fa-cloud';
+            if (lower.includes('pluie')) return 'fa-cloud-rain';
+            if (lower.includes('orage')) return 'fa-bolt';
+            return 'fa-cloud';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Météo Algérie - Dashboard</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Animation de fond -->
+    <div class="background-animation">
+        <div class="bubble bubble-1"></div>
+        <div class="bubble bubble-2"></div>
+        <div class="bubble bubble-3"></div>
+        <div class="bubble bubble-4"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="animated-header">
+        <div class="logo">
+            <i class="fas fa-cloud-sun"></i>
+            <h1>Météo<span>Algérie</span></h1>
+        </div>
+        
+        <!-- Nouveau conteneur pour l'icône de connexion -->
+        <div class="header-actions">
+            <a href="login.html" class="login-btn-icon" title="Se connecter">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Connexion</span>
+            </a>
+        </div>
+        
+        <nav>
+            <!-- Vos liens de navigation existants -->
+        </nav>
+        
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </header>
+     
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2 class="animated-text">Découvrez la météo de votre région</h2>
+            <p>Accédez aux prévisions météorologiques pour toutes les wilayas d'Algérie</p>
+            
+            <!-- Barre de recherche -->
+            <div class="search-container animated-search">
+                <div class="search-box">
+                    <input type="text" id="search-wilaya" placeholder="Rechercher une wilaya...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+                <div class="search-results"></div>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://via.placeholder.com/500x300" alt="Carte Algérie" class="animated-image">
+        </div>
+    </section>
+
+    <!-- Dashboard Sections -->
+    <main>
+        <!-- Section Wilayas -->
+        <section id="wilayas" class="wilayas-section">
+            <h2><i class="fas fa-list-ul"></i> Liste des Wilayas</h2>
+            <div class="wilaya-grid">
+                <!-- Les éléments seront ajoutés dynamiquement par JavaScript -->
+            </div>
+        </section>
+
+        <!-- Section Carte -->
+        <section id="map-section" class="map-section">
+            <h2><i class="fas fa-map-marked-alt"></i> Carte Interactive</h2>
+            <div id="map"></div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Météo Algérie</h3>
+                <p>Plateforme de prévisions météorologiques pour les 58 wilayas algériennes</p>
+            </div>
+            <div class="footer-section">
+                <h3>Liens utiles</h3>
+                <ul>
+                    <li><a href="#">Accueil</a></li>
+                    <li><a href="#wilayas">Wilayas</a></li>
+                    <li><a href="#map-section">Carte</a></li>
+                    <li><a href="login.html">Connexion</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p><i class="fas fa-envelope"></i> contact@meteo-algerie.dz</p>
+                <p><i class="fas fa-phone"></i> +213 XXX XX XX XX</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Météo Algérie. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Données des wilayas (exemple)
+        const wilayas = [
+            { name: "Alger", code: 16, coords: [36.7525, 3.0420] },
+            { name: "Oran", code: 31, coords: [35.6971, -0.6337] },
+            { name: "Constantine", code: 25, coords: [36.3650, 6.6147] },
+            { name: "Tizi Ouzou", code: 15, coords: [36.7167, 4.0500] },
+            { name: "Blida", code: 9, coords: [36.4700, 2.8300] },
+            { name: "Béchar", code: 8, coords: [31.6167, -2.2167] },
+            { name: "Tlemcen", code: 13, coords: [34.8783, -1.3150] },
+            { name: "Annaba", code: 23, coords: [36.9000, 7.7667] },
+            { name: "Sétif", code: 19, coords: [36.1900, 5.4100] },
+            { name: "Batna", code: 5, coords: [35.5500, 6.1667] }
+        ];
+
+        // Initialisation de la carte
+        function initMap() {
+            const map = L.map('map').setView([28.0339, 1.6596], 5);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Ajouter des marqueurs pour chaque wilaya
+            wilayas.forEach(wilaya => {
+                L.marker(wilaya.coords)
+                    .addTo(map)
+                    .bindPopup(`<b>${wilaya.name}</b><br>Code: ${wilaya.code}`)
+                    .on('click', function() {
+                        window.location.href = `meteo.html?wilaya=${encodeURIComponent(wilaya.name)}`;
+                    });
+            });
+        }
+
+        // Charger les wilayas dans la grille
+        function loadWilayas() {
+            const grid = document.querySelector('.wilaya-grid');
+            
+            wilayas.forEach(wilaya => {
+                const card = document.createElement('div');
+                card.className = 'wilaya-card';
+                card.innerHTML = `
+                    <div class="card-content">
+                        <h3>${wilaya.name}</h3>
+                        <p>Code: ${wilaya.code}</p>
+                        <a href="meteo.html?wilaya=${encodeURIComponent(wilaya.name)}" class="view-btn">
+                            Voir météo <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                `;
+                card.style.animationDelay = `${Math.random() * 0.5}s`;
+                grid.appendChild(card);
+            });
+        }
+
+        // Barre de recherche
+        document.getElementById('search-wilaya').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const cards = document.querySelectorAll('.wilaya-card');
+            
+            cards.forEach(card => {
+                const wilayaName = card.querySelector('h3').textContent.toLowerCase();
+                if (wilayaName.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Menu responsive
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.querySelector('nav').classList.toggle('active');
+        });
+
+        // Initialiser la carte et les wilayas au chargement
+        window.onload = function() {
+            initMap();
+            loadWilayas();
+            
+            // Animation au scroll
+            const animatedElements = document.querySelectorAll('.animated-header, .animated-text, .animated-search, .animated-image');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            animatedElements.forEach(el => observer.observe(el));
+        };
+
+
+
+    </script>
+</body>
+</html>

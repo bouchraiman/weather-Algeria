@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un compte - Météo Algérie</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2e86de;
+            --success: #2ecc71;
+            --error: #e74c3c;
+            --light: #f5f7fa;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .register-container {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .logo i {
+            font-size: 3rem;
+            color: var(--primary);
+        }
+        
+        .logo h1 {
+            color: #333;
+            margin-top: 0.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .input-icon {
+            position: relative;
+        }
+        
+        .input-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 134, 222, 0.2);
+        }
+        
+        .password-strength {
+            margin-top: 0.5rem;
+            height: 5px;
+            background: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s, background 0.3s;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            background-color: #1e6fc7;
+            transform: translateY(-2px);
+        }
+        
+        .links {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+        
+        .links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .links a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            color: var(--error);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .success-message {
+            color: var(--success);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        /* Animation pour les erreurs */
+        .shake {
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        
+        /* Style pour le sélecteur de wilaya */
+        .wilaya-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .wilaya-select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 134, 222, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="logo">
+            <i class="fas fa-cloud-sun"></i>
+            <h1>Créer un compte</h1>
+        </div>
+        
+        <form id="registerForm" action="register.php" method="POST">
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur</label>
+                <div class="input-icon">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" name="username" class="form-control" required>
+                </div>
+                <div id="username-error" class="error-message"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Adresse email</label>
+                <div class="input-icon">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                <div id="email-error" class="error-message"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="wilaya">Wilaya</label>
+                <select id="wilaya" name="wilaya" class="wilaya-select" required>
+                    <option value="">Sélectionnez votre wilaya</option>
+                    <option value="Alger">Alger</option>
+                    <option value="Oran">Oran</option>
+                    <option value="Constantine">Constantine</option>
+                    <!-- Ajoutez toutes les wilayas ici -->
+                </select>
+                <div id="wilaya-error" class="error-message"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <div class="input-icon">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+                <div class="password-strength">
+                    <div class="strength-bar" id="strengthBar"></div>
+                </div>
+                <div id="password-error" class="error-message"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm_password">Confirmer le mot de passe</label>
+                <div class="input-icon">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+                </div>
+                <div id="confirm-error" class="error-message"></div>
+            </div>
+            
+            <button type="submit" class="btn">
+                <i class="fas fa-user-plus"></i> Créer mon compte
+            </button>
+            
+            <div class="links">
+                <a href="login.html">Déjà un compte ? Se connecter</a>
+            </div>
+            
+            <div id="success-message" class="success-message"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Réinitialiser les messages d'erreur
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+                el.textContent = '';
+            });
+            
+            // Récupérer les valeurs
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const wilaya = document.getElementById('wilaya').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            
+            let isValid = true;
+            
+            // Validation du nom d'utilisateur
+            if (username.length < 3) {
+                showError('username-error', 'Le nom d\'utilisateur doit contenir au moins 3 caractères');
+                isValid = false;
+            }
+            
+            // Validation de l'email
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showError('email-error', 'Veuillez entrer une adresse email valide');
+                isValid = false;
+            }
+            
+            // Validation de la wilaya
+            if (!wilaya) {
+                showError('wilaya-error', 'Veuillez sélectionner votre wilaya');
+                isValid = false;
+            }
+            
+            // Validation du mot de passe
+            if (password.length < 8) {
+                showError('password-error', 'Le mot de passe doit contenir au moins 8 caractères');
+                isValid = false;
+            }
+            
+            // Vérification de la correspondance des mots de passe
+            if (password !== confirmPassword) {
+                showError('confirm-error', 'Les mots de passe ne correspondent pas');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Soumettre le formulaire si tout est valide
+                this.submit();
+            }
+        });
+        
+        // Indicateur de force du mot de passe
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthBar = document.getElementById('strengthBar');
+            let strength = 0;
+            
+            // Vérifier la longueur
+            if (password.length > 7) strength += 1;
+            
+            // Vérifier les caractères spéciaux
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength += 1;
+            
+            // Vérifier les chiffres
+            if (/\d/.test(password)) strength += 1;
+            
+            // Vérifier les majuscules et minuscules
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 1;
+            
+            // Mettre à jour la barre de force
+            switch(strength) {
+                case 0:
+                    strengthBar.style.width = '0%';
+                    strengthBar.style.background = '#e74c3c';
+                    break;
+                case 1:
+                    strengthBar.style.width = '25%';
+                    strengthBar.style.background = '#e74c3c';
+                    break;
+                case 2:
+                    strengthBar.style.width = '50%';
+                    strengthBar.style.background = '#f39c12';
+                    break;
+                case 3:
+                    strengthBar.style.width = '75%';
+                    strengthBar.style.background = '#f39c12';
+                    break;
+                case 4:
+                    strengthBar.style.width = '100%';
+                    strengthBar.style.background = '#2ecc71';
+                    break;
+            }
+        });
+        
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+            element.parentElement.classList.add('shake');
+            
+            setTimeout(() => {
+                element.parentElement.classList.remove('shake');
+            }, 500);
+        }
+        
+        // Gestion des erreurs venant du serveur
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        const success = urlParams.get('success');
+        
+        if (error) {
+            let errorMessage;
+            
+            switch(error) {
+                case 'username_exists':
+                    errorMessage = 'Ce nom d\'utilisateur est déjà pris';
+                    showError('username-error', errorMessage);
+                    break;
+                case 'email_exists':
+                    errorMessage = 'Cet email est déjà utilisé';
+                    showError('email-error', errorMessage);
+                    break;
+                case 'invalid_email':
+                    errorMessage = 'Email invalide';
+                    showError('email-error', errorMessage);
+                    break;
+                case 'weak_password':
+                    errorMessage = 'Le mot de passe doit contenir au moins 8 caractères';
+                    showError('password-error', errorMessage);
+                    break;
+                default:
+                    errorMessage = 'Une erreur est survenue lors de l\'inscription';
+                    showError('username-error', errorMessage);
+            }
+        }
+        
+        if (success) {
+            const successMessage = document.getElementById('success-message');
+            successMessage.textContent = 'Compte créé avec succès ! Redirection...';
+            successMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

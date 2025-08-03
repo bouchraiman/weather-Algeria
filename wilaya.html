@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wilaya - Météo Algérie</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2e86de;
+            --secondary: #3dc1d3;
+            --dark: #2c3e50;
+            --light: #f5f7fa;
+            --error: #e74c3c;
+            --success: #2ecc71;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        
+        /* Header */
+        .wilaya-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .wilaya-title {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .wilaya-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn.active, .nav-btn:hover {
+            background: white;
+            color: var(--primary);
+        }
+        
+        /* Contenu principal */
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            max-width: 1200px;
+            margin: 2rem auto;
+            gap: 2rem;
+            padding: 0 1.5rem;
+        }
+        
+        /* Section Communauté */
+        .community-section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .section-header {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--dark);
+        }
+        
+        .new-post-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Posts */
+        .post {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 1rem;
+            border: 2px solid var(--primary);
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-weight: 600;
+        }
+        
+        .post-time {
+            font-size: 0.8rem;
+            color: #777;
+        }
+        
+        .post-content {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .post-actions {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .post-action {
+            color: #777;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .post-action:hover {
+            color: var(--primary);
+        }
+        
+        /* Section Météo */
+        .weather-section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .weather-card {
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .weather-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+        
+        .weather-temp {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .weather-desc {
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .weather-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            text-align: left;
+        }
+        
+        .weather-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+            
+            .wilaya-nav {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- En-tête de la wilaya -->
+    <header class="wilaya-header">
+        <h1 class="wilaya-title" id="wilayaTitle">Nom de la Wilaya</h1>
+        <p>Communauté locale et informations météo</p>
+        
+        <div class="wilaya-nav">
+            <button class="nav-btn active" data-section="community">
+                <i class="fas fa-users"></i> Communauté
+            </button>
+            <button class="nav-btn" data-section="weather">
+                <i class="fas fa-cloud-sun"></i> Météo
+            </button>
+            <button class="nav-btn" data-section="events">
+                <i class="fas fa-calendar-alt"></i> Événements
+            </button>
+        </div>
+    </header>
+    
+    <!-- Contenu principal -->
+    <div class="main-container">
+        <!-- Section Communauté -->
+        <section class="community-section" id="communitySection">
+            <div class="section-header">
+                <h2 class="section-title">Dernières discussions</h2>
+                <button class="new-post-btn" id="newPostBtn">
+                    <i class="fas fa-plus"></i> Nouveau post
+                </button>
+            </div>
+            
+            <!-- Post 1 -->
+            <div class="post">
+                <div class="post-header">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <div class="user-name">Ahmed B.</div>
+                        <div class="post-time">Il y a 2 heures</div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <p>Quel temps magnifique aujourd'hui ! 28°C et un ciel dégagé. Idéal pour une sortie en mer. Qui veut se joindre à nous ce weekend ?</p>
+                </div>
+                <div class="post-actions">
+                    <a href="#" class="post-action"><i class="far fa-thumbs-up"></i> 24</a>
+                    <a href="#" class="post-action"><i class="far fa-comment"></i> 5</a>
+                    <a href="#" class="post-action"><i class="fas fa-share"></i> Partager</a>
+                </div>
+            </div>
+            
+            <!-- Post 2 -->
+            <div class="post">
+                <div class="post-header">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <div class="user-name">Fatima Z.</div>
+                        <div class="post-time">Hier à 18:30</div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <p>Attention aux orages prévus demain après-midi dans la région. Selon les dernières prévisions, nous pourrions avoir de fortes pluies vers 15h.</p>
+                    <img src="https://via.placeholder.com/600x300" alt="Carte météo" style="width:100%; margin-top:1rem; border-radius:8px;">
+                </div>
+                <div class="post-actions">
+                    <a href="#" class="post-action"><i class="far fa-thumbs-up"></i> 42</a>
+                    <a href="#" class="post-action"><i class="far fa-comment"></i> 8</a>
+                    <a href="#" class="post-action"><i class="fas fa-share"></i> Partager</a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section Météo (sidebar) -->
+        <aside class="weather-section" id="weatherSection">
+            <div class="section-header">
+                <h2 class="section-title">Météo actuelle</h2>
+            </div>
+            <div class="weather-card">
+                <div class="weather-icon" id="weatherIcon">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="weather-temp" id="weatherTemp">28°C</div>
+                <div class="weather-desc" id="weatherDesc">Ensoleillé</div>
+                
+                <div class="weather-details">
+                    <div class="weather-detail">
+                        <i class="fas fa-droplet"></i>
+                        <span>Humidité: <span id="humidity">45</span>%</span>
+                    </div>
+                    <div class="weather-detail">
+                        <i class="fas fa-wind"></i>
+                        <span>Vent: <span id="windSpeed">12</span> km/h</span>
+                    </div>
+                    <div class="weather-detail">
+                        <i class="fas fa-temperature-high"></i>
+                        <span>Ressenti: <span id="feelsLike">30</span>°C</span>
+                    </div>
+                    <div class="weather-detail">
+                        <i class="fas fa-eye"></i>
+                        <span>Visibilité: <span id="visibility">10</span> km</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        // Récupérer le nom de la wilaya depuis l'URL
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const wilayaName = urlParams.get('wilaya');
+            
+            if (wilayaName) {
+                document.getElementById('wilayaTitle').textContent = wilayaName;
+                fetchWeatherData(wilayaName);
+            }
+            
+            // Gestion des onglets
+            const navBtns = document.querySelectorAll('.nav-btn');
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Retirer la classe active de tous les boutons
+                    navBtns.forEach(b => b.classList.remove('active'));
+                    // Ajouter la classe active au bouton cliqué
+                    this.classList.add('active');
+                    
+                    // Ici vous pourriez ajouter la logique pour afficher/masquer les sections
+                });
+            });
+            
+            // Bouton nouveau post
+            document.getElementById('newPostBtn').addEventListener('click', function() {
+                alert('Fonctionnalité à implémenter : Création de nouveau post');
+            });
+        });
+        
+        // Récupérer les données météo
+        async function fetchWeatherData(wilayaName) {
+            try {
+                // Simuler un appel API
+                const weatherData = {
+                    temperature: 28,
+                    conditions: "Ensoleillé",
+                    humidity: 45,
+                    wind_speed: 12,
+                    feels_like: 30,
+                    visibility: 10
+                };
+                
+                // Mettre à jour l'interface
+                document.getElementById('weatherTemp').textContent = `${weatherData.temperature}°C`;
+                document.getElementById('weatherDesc').textContent = weatherData.conditions;
+                document.getElementById('humidity').textContent = weatherData.humidity;
+                document.getElementById('windSpeed').textContent = weatherData.wind_speed;
+                document.getElementById('feelsLike').textContent = weatherData.feels_like;
+                document.getElementById('visibility').textContent = weatherData.visibility;
+                
+                // Mettre à jour l'icône
+                const icon = getWeatherIcon(weatherData.conditions);
+                document.getElementById('weatherIcon').innerHTML = `<i class="fas ${icon}"></i>`;
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        }
+        
+        function getWeatherIcon(conditions) {
+            const lower = conditions.toLowerCase();
+            if (lower.includes('soleil') || lower.includes('ensoleillé')) return 'fa-sun';
+            if (lower.includes('nuage')) return 'fa-cloud';
+            if (lower.includes('pluie')) return 'fa-cloud-rain';
+            if (lower.includes('orage')) return 'fa-bolt';
+            return 'fa-cloud-sun';
+        }
+    </script>
+</body>
+</html>
